@@ -55,7 +55,16 @@ router.delete('/:id', (req, res, next) => {
 
 // UPDATE an offer
 router.patch('/:id', (req, res, next) => {
-  res.send('UPDATE an offer')
+  // res.send('UPDATE an offer')
+
+  const { id } = req.params
+  const { name } = req.body
+
+  knex('offers')
+    .update({ name })
+    .where('id', id)
+    .returning('id')
+    .then(result => res.json(result))
 })
 
 module.exports = router
