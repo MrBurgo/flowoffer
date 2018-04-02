@@ -19,17 +19,38 @@ router.get('/:id', (req, res, next) => {
   knex('offers')
     .select('id', 'name')
     .where('id', id)
-    .then(rows => res.json(rows))
+    .then((rows) => {
+      if (rows.length > 0) {
+        res.json(rows)
+      } else {
+        res.sendStatus(404)
+      }
+    })
 })
 
 // POST a new offer
 router.post('/', (req, res, next) => {
-  res.send('POST a new offer')
+  // res.send('POST a new offer')
+  const { name } = req.body
+
+  knex('offers')
+    .insert([
+      { name }
+    ])
+    .returning('id')
+    .then(result => res.send(result))
 })
 
 // DELETE an offer
 router.delete('/:id', (req, res, next) => {
-  res.send('DELETE an offer')
+  // res.send('DELETE an offer')
+
+  const { id } = req.params
+
+  knex('offers')
+    .del()
+    .where('id', id)
+    .then(result => res.json(result))
 })
 
 // UPDATE an offer
